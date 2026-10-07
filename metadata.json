@@ -1,0 +1,6 @@
+{
+  "name": "The Church of Pentecost — Buoho District",
+  "description": "Official website for The Church of Pentecost, Buoho District. Son's of God. March Forward. Featuring Pastor Thomas Appiah, 2026 Strategic Growth Plan, Fluenca Christian Social Media, and Moments Gallery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
