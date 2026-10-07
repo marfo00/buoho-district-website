@@ -1,3 +1,5 @@
+import customImages from '../data/customImages.json';
+
 // Production image resolution utility
 export interface ManagedImageConfig {
   key: string;
@@ -163,13 +165,22 @@ export const MANAGED_IMAGES: ManagedImageConfig[] = [
 
 /**
  * Returns the effective image URL for a given managed key, falling back to defaultUrl.
+ * Checks baked customImages first (works everywhere including Vercel), then localStorage, then default.
  */
 export function getManagedImage(key: string, defaultUrl: string): string {
-  if (typeof window === 'undefined') return defaultUrl;
-  try {
-    const stored = localStorage.getItem(key);
-    return stored || defaultUrl;
-  } catch {
-    return defaultUrl;
+  // 1. Check baked customImages json bundled into build
+  if (customImages && (customImages as Record<string, string>)[key]) {
+    return (customImages as Record<string, string>)[key];
   }
+
+  // 2. Check browser localStorage
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem(key);
+      if (stored) return stored;
+    } catch {}
+  }
+
+  // 3. Fallback to default
+  return defaultUrl;
 }

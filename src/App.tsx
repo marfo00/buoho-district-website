@@ -16,12 +16,23 @@ import { ContactPage } from './components/pages/ContactPage';
 
 import { CHURCH_INFO } from './data/galleryData';
 import { useChurchLogo } from './utils/logoState';
+import { autoSyncImagesToFiles } from './utils/syncImagesToFiles';
 
 export default function App() {
   const [activePage, setActivePage] = useState<string>('home');
   const [feedSubTab, setFeedSubTab] = useState<'news' | 'events' | 'announcements' | 'sermons'>('news');
   const [globalFunnelOpen, setGlobalFunnelOpen] = useState(false);
+  const [syncedCount, setSyncedCount] = useState<number | null>(null);
   const { logo } = useChurchLogo();
+
+  React.useEffect(() => {
+    autoSyncImagesToFiles().then((count) => {
+      if (count > 0) {
+        setSyncedCount(count);
+        setTimeout(() => setSyncedCount(null), 6000);
+      }
+    });
+  }, []);
 
   const handleNavigate = (page: string, subCategory?: 'news' | 'events' | 'announcements' | 'sermons') => {
     setActivePage(page);
@@ -32,6 +43,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+      {syncedCount && (
+        <div className="bg-emerald-600 text-white text-xs font-semibold py-2.5 px-4 text-center transition-all flex items-center justify-center gap-2 shadow-sm z-50">
+          <span>✓ Successfully saved {syncedCount} custom image(s) into project files! Ready to push to GitHub & Vercel.</span>
+        </div>
+      )}
+
       {/* 1. Header Navigation Bar (With logo & Join Fluenca) */}
       <Navbar
         activePage={activePage}
